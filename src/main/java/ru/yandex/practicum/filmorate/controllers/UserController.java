@@ -19,7 +19,6 @@ import javax.validation.Valid;
 
 @RestController
 @Slf4j
-@RequestMapping("/filmorate")
 public class UserController {
     private int baseId = 0;
     private final Map<Integer, User> users = new HashMap<>();

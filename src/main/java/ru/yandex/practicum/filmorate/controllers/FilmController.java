@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @Slf4j
-@RequestMapping("/filmorate")
 public class FilmController {
     private int baseId = 0;
     private final Map<Integer, Film> films = new HashMap<>();
