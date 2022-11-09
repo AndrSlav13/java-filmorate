@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import ru.yandex.practicum.filmorate.errors.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -12,10 +11,8 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AdaptersAndFormat {
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -65,8 +62,9 @@ public class AdaptersAndFormat {
             el.add("id", new JsonPrimitive(film.getId()));
             el.add("name", new JsonPrimitive(film.getName()));
             el.add("description", new JsonPrimitive(film.getDescription()));
-            if(film.getReleaseDate() != null) el.add("releaseDate", context.serialize(film.getReleaseDate(), LocalDate.class));
-            if(film.getDuration() != null) el.add("duration", new JsonPrimitive(film.getDuration()));
+            if (film.getReleaseDate() != null)
+                el.add("releaseDate", context.serialize(film.getReleaseDate(), LocalDate.class));
+            if (film.getDuration() != null) el.add("duration", new JsonPrimitive(film.getDuration()));
             return el;
         }
 
@@ -75,19 +73,19 @@ public class AdaptersAndFormat {
             Film film = new Film();
 
             JsonObject data = json.getAsJsonObject();
-                film.setId(data.get("id").getAsInt());
+            film.setId(data.get("id").getAsInt());
 
-                String name = data.get("name").getAsString();
-                film.setName(name);
+            String name = data.get("name").getAsString();
+            film.setName(name);
 
-                String description = data.get("description").getAsString();
-                film.setDescription(description);
+            String description = data.get("description").getAsString();
+            film.setDescription(description);
 
-                LocalDate date = gson.fromJson(data.get("releaseDate").getAsString(), LocalDate.class);
-                film.setReleaseDate(date);
+            LocalDate date = gson.fromJson(data.get("releaseDate").getAsString(), LocalDate.class);
+            film.setReleaseDate(date);
 
-                Integer dur = data.get("duration").getAsInt();
-                film.setDuration(dur);
+            Integer dur = data.get("duration").getAsInt();
+            film.setDuration(dur);
 
             return film;
         }
@@ -101,8 +99,8 @@ public class AdaptersAndFormat {
             el.add("id", new JsonPrimitive(user.getId()));
             el.add("email", new JsonPrimitive(user.getEmail()));
             el.add("login", new JsonPrimitive(user.getLogin()));
-            if(user.getName() != null) el.add("name", new JsonPrimitive(user.getName()));
-            if(user.getBirthday() != null) el.add("birthday", context.serialize(user.getBirthday(), LocalDate.class));
+            if (user.getName() != null) el.add("name", new JsonPrimitive(user.getName()));
+            if (user.getBirthday() != null) el.add("birthday", context.serialize(user.getBirthday(), LocalDate.class));
             return el;
         }
 
@@ -111,19 +109,19 @@ public class AdaptersAndFormat {
             User user = new User();
 
             JsonObject data = json.getAsJsonObject();
-                user.setId(data.get("id").getAsInt());
+            user.setId(data.get("id").getAsInt());
 
-                String email = data.get("email").getAsString();
-                user.setEmail(email);
+            String email = data.get("email").getAsString();
+            user.setEmail(email);
 
-                String login = data.get("login").getAsString();
-                user.setLogin(login);
+            String login = data.get("login").getAsString();
+            user.setLogin(login);
 
-                String name = data.get("name").getAsString();
-                user.setName(name);
+            String name = data.get("name").getAsString();
+            user.setName(name);
 
-                LocalDate date = gson.fromJson(data.get("birthday").getAsString(), LocalDate.class);
-                user.setBirthday(date);
+            LocalDate date = gson.fromJson(data.get("birthday").getAsString(), LocalDate.class);
+            user.setBirthday(date);
 
             return user;
         }
