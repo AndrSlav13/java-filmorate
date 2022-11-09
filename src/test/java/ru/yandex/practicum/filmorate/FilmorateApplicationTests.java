@@ -46,7 +46,7 @@ class FilmorateApplicationTests {
 		}
 	};
 
-	String path = "http://localhost:8080/filmorate";
+	String path = "http://localhost:8080";
 	clientForTests client = new clientForTests(path);
 	ConfigurableApplicationContext ctx;
 	User user1 = new User();
