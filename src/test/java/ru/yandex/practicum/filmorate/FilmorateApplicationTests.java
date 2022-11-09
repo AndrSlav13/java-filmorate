@@ -157,7 +157,6 @@ class FilmorateApplicationTests {
         @Test
         public void testBlankRequest() {
             HttpResponse<String> resp = client.put("/users", gson.toJson(new BlankClass()));
-            //assertEquals(resp.statusCode(), 404);   //test without annotation login
             assertEquals(resp.statusCode(), 500);
         }
 
@@ -165,8 +164,6 @@ class FilmorateApplicationTests {
         public void testWrongLogin() {
             HttpResponse<String> resp = client.post("/users", gson.toJson(user2));
             assertEquals(500, resp.statusCode());
-            //String ss = resp.body();
-            //assertEquals("\"500 : wrong login format\"", resp.body());
         }
 
         @Test
