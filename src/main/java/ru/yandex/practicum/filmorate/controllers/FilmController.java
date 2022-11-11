@@ -7,40 +7,17 @@ import ru.yandex.practicum.filmorate.services.ServiceFilm;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @Slf4j
 public class FilmController {
-    private static int baseId = 0;
-    private static final Map<Integer, Film> films = new HashMap<>();
-
-    public static Collection<Film> getData() {
-        return films.values();
-    }
-
     public static org.slf4j.Logger getLogger() {
         return log;
     }
 
-    private static int getNewId() {
-        return ++baseId;
-    }
-
-    public static void addFilm(Film film) {
-        film.setId(getNewId());
-        films.put(film.getId(), film);
-    }
-
-    public static void updateFilm(Film film) {
-        films.put(film.getId(), film);
-    }
-
     @GetMapping("/films")
     public ArrayList<Film> getFilms() {
-        return new ArrayList<Film>(films.values());
+        return ServiceFilm.getFilms();
     }
 
     @PostMapping("/films")

@@ -6,11 +6,17 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ServiceFilm {
+    private static int baseId = 0;
+    private static final Map<Integer, Film> films = new HashMap<>();
+
     public static void validate(Film film, String method) {
         if (method.equals("PUT"))
-            if (film.getId() == null || !FilmController.getData().contains(film))
+            if (film.getId() == null || !films.values().contains(film))
                 throw new ValidationException(404, "incorrect film id");
 
         String name = film.getName();
@@ -33,10 +39,16 @@ public class ServiceFilm {
     }
 
     public static void addFilm(Film film) {
-        FilmController.addFilm(film);
+        ++baseId;
+        film.setId(baseId);
+        films.put(baseId, film);
     }
 
     public static void updateFilm(Film film) {
-        FilmController.updateFilm(film);
+        films.put(film.getId(), film);
+    }
+
+    public static ArrayList<Film> getFilms() {
+        return new ArrayList<Film>(films.values());
     }
 }

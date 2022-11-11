@@ -6,11 +6,17 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ServiceUser {
+    private static int baseId = 0;
+    private static final Map<Integer, User> users = new HashMap<>();
+
     public static void validate(User user, String method) {
         if (method.equals("PUT"))
-            if (user.getId() == null || !UserController.getData().contains(user))
+            if (user.getId() == null || !users.values().contains(user))
                 throw new ValidationException(404, "incorrect user id");
 
         String email = user.getEmail();
@@ -34,10 +40,16 @@ public class ServiceUser {
     }
 
     public static void addUser(User user) {
-        UserController.addUser(user);
+        ++baseId;
+        user.setId(baseId);
+        users.put(baseId, user);
     }
 
     public static void updateUser(User user) {
-        UserController.updateUser(user);
+        users.put(user.getId(), user);
+    }
+
+    public static ArrayList<User> getUsers() {
+        return new ArrayList<User>(users.values());
     }
 }
