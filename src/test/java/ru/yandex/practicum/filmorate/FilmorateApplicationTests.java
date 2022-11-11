@@ -6,7 +6,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ConfigurableApplicationContext;
-import ru.yandex.practicum.filmorate.client.clientForTests;
+import ru.yandex.practicum.filmorate.client.ClientForTests;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -50,7 +50,7 @@ class FilmorateApplicationTests {
     }
 
     String path = "http://localhost:8080";
-    clientForTests client = new clientForTests(path);
+    ClientForTests client = new ClientForTests(path);
     ConfigurableApplicationContext ctx;
     User user1 = new User();
     User user2 = new User();

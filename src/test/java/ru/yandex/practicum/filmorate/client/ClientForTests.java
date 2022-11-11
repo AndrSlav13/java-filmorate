@@ -12,10 +12,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class clientForTests {
+public class ClientForTests {
     private final URI uriToServer;
 
-    public clientForTests(String uri) {
+    public ClientForTests(String uri) {
         try {
             uriToServer = new URI(uri);
         } catch (URISyntaxException ex) {

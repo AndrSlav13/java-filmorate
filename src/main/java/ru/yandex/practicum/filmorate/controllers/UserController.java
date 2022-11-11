@@ -2,22 +2,42 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.errors.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.services.ServiceUser;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @Slf4j
 public class UserController {
-    private int baseId = 0;
-    private final Map<Integer, User> users = new HashMap<>();
+    private static int baseId = 0;
+    private static final Map<Integer, User> users = new HashMap<>();
+
+    public static Collection<User> getData() {
+        return users.values();
+    }
+
+    public static org.slf4j.Logger getLogger() {
+        return log;
+    }
+
+    public static int getNewId() {
+        return ++baseId;
+    }
+
+    public static void addUser(User user) {
+        user.setId(getNewId());
+        users.put(user.getId(), user);
+    }
+
+    public static void updateUser(User user) {
+        users.put(user.getId(), user);
+    }
 
     @GetMapping("/users")
     public ArrayList<User> getUsers() {
@@ -25,47 +45,20 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public User setUser(@Valid @RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
-        log.info("Получен запрос к эндпоинту: '{} {}', Строка параметров запроса: '{}'",
-                request.getMethod(), request.getRequestURI(), request.getQueryString());
-        validate(user, request.getMethod());
-
-        ++baseId;
-        user.setId(baseId);
-
-        users.put(baseId, user);
-        return users.get(baseId);
+    public User setUser(@Valid @RequestBody User user, HttpServletRequest request) {
+        ServiceUser.log(request);
+        ServiceUser.validate(user, request.getMethod());
+        ServiceUser.addUser(user);
+        return user;
     }
 
     @PutMapping("/users")
-    public User updateUser(@Valid @RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
-        log.info("Получен запрос к эндпоинту: '{} {}', Строка параметров запроса: '{}'",
-                request.getMethod(), request.getRequestURI(), request.getQueryString());
-        validate(user, request.getMethod());
-
-        Integer id = user.getId();
-
-        users.put(id, user);
-        return users.get(id);
+    public User updateUser(@Valid @RequestBody User user, HttpServletRequest request) {
+        ServiceUser.log(request);
+        ServiceUser.validate(user, request.getMethod());
+        ServiceUser.updateUser(user);
+        return user;
     }
 
-    private void validate(User user, String method) {
-        if (method.equals("PUT"))
-            if (user.getId() == null || !users.containsKey(user.getId()))
-                throw new ValidationException(404, "incorrect user id");
 
-        String email = user.getEmail();
-        if (email == null || email.trim().isEmpty() || !email.contains("@"))
-            throw new ValidationException("wrong email format");
-
-        String login = user.getLogin();
-        if (login == null || login.trim().isEmpty() || login.contains(" "))
-            throw new ValidationException("wrong login format");
-
-        String name = user.getName();
-        if (name == null || name.trim().isEmpty()) user.setName(login);
-
-        LocalDate birthday = user.getBirthday();
-        if (birthday.isAfter(LocalDate.now())) throw new ValidationException("wrong birthday format");
-    }
 }
