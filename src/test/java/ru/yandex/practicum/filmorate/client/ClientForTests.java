@@ -3,7 +3,7 @@
 **/
 package ru.yandex.practicum.filmorate.client;
 
-import ru.yandex.practicum.filmorate.errors.HttpRequestUserException;
+import ru.yandex.practicum.filmorate.errors.httpExceptions.HttpRequestUserException;
 
 import java.io.IOException;
 import java.net.URI;
