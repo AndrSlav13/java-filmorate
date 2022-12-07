@@ -1,3 +1,3 @@
 # java-filmorate
-Template repository for Filmorate project.
+## Database scheme
 ![Database scheme](database_scheme.png)
