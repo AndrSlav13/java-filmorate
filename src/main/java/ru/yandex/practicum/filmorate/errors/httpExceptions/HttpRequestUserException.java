@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.errors;
+package ru.yandex.practicum.filmorate.errors.httpExceptions;
 
 public class HttpRequestUserException extends RuntimeException {
     private final int code;

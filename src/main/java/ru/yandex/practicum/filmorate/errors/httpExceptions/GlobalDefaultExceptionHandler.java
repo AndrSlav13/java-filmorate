@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.errors;
+package ru.yandex.practicum.filmorate.errors.httpExceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationUtils;
