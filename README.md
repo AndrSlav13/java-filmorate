@@ -1,6 +1,6 @@
 # java-filmorate
 ## Database scheme
-![Database scheme](Database_scheme.png)
+![Database scheme](Database_Scheme.png)
 ## Query examples
 - **All users names request**
 
