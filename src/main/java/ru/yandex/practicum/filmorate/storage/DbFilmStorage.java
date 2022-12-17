@@ -138,7 +138,7 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public Film getFilm(int id) {
-        String sql = "select f.id as fid, f.name as name, f.description as description, f.releaseDate as releaseDate, f.duration as duration, m.id as mid, m.NAME as mpa " +
+        String sql = "select f.id as fid, f.name as name, description, releaseDate, duration, m.id as mid, m.NAME as mpa " +
                 "from FILM_TABLE AS f " +
                 "LEFT JOIN MPA_TABLE as m on f.ID_MPA=m.ID " +
                 "where f.id=? ";

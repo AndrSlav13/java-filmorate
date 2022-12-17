@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS user_friend_table (
 CREATE TABLE IF NOT EXISTS like_film_table (
                                                id_film          integer,
                                                id_user          integer,
-                                               FOREIGN KEY(id_user) REFERENCES user_table(id) on delete cascade,
+                                               FOREIGN KEY(id_user) REFERENCES user_table(id),
                                                FOREIGN KEY(id_film) REFERENCES film_table(id) on delete cascade,
                                                primary key (id_user, id_film)
 );
