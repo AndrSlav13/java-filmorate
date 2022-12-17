@@ -6,8 +6,10 @@ import ru.yandex.practicum.filmorate.controllers.FilmController;
 import ru.yandex.practicum.filmorate.errors.httpExceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.DbFilmStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorageInterface;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.util.Genre;
+import ru.yandex.practicum.filmorate.util.MPA;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
@@ -20,8 +22,13 @@ public class FilmService implements FilmServiceInterface {
     private final FilmStorageInterface filmData;
     private static final org.slf4j.Logger log = FilmController.getLogger();
 
+    @Override
+    public Boolean contains(Integer userId) {
+        return filmData.contains(userId);
+    }
+
     @Autowired
-    public FilmService(InMemoryFilmStorage filmData) {
+    public FilmService(DbFilmStorage filmData) {
         this.filmData = filmData;
     }
 
@@ -90,5 +97,25 @@ public class FilmService implements FilmServiceInterface {
     @Override
     public List<Film> getPopularFilms(Optional<Integer> count) {
         return filmData.getPopularFilms(count);
+    }
+
+    @Override
+    public List<Genre> getGenres() {
+        return filmData.getGenres();
+    }
+
+    @Override
+    public Genre getGenre(int id) {
+        return filmData.getGenre(id);
+    }
+
+    @Override
+    public List<MPA> getMPAs() {
+        return filmData.getMPAs();
+    }
+
+    @Override
+    public MPA getMPA(int id) {
+        return filmData.getMPA(id);
     }
 }

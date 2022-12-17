@@ -1,18 +1,22 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
     private Integer id;
     private String email;
     @NotNull
-    @Pattern(regexp = "[_a-zA-Z0-9]+", message = "wrong login format")
+    @Pattern(regexp = "[a-zA-Z][_a-zA-Z0-9]{4,}", message = "wrong login format")
     @NotBlank(message = "login is mandatory")
     private String login;
     private String name;

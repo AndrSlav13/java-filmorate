@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.services.FilmService;
 import ru.yandex.practicum.filmorate.services.FilmServiceInterface;
 import ru.yandex.practicum.filmorate.services.UserService;
 import ru.yandex.practicum.filmorate.services.UserServiceInterface;
+import ru.yandex.practicum.filmorate.util.Genre;
+import ru.yandex.practicum.filmorate.util.MPA;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -54,8 +56,7 @@ public class FilmController {
     public Film addFilm(@RequestBody Film film, HttpServletRequest request) {
         filmService.log(request);
         filmService.validateFilmFormat(film, request.getMethod());
-        filmService.addFilm(film);
-        return film;
+        return filmService.addFilm(film);
     }
 
     @PutMapping("/films")
@@ -82,4 +83,29 @@ public class FilmController {
         return filmService.removeLike(filmId, userId);
     }
 
+    //Жанры фильмов в базе данных
+    @GetMapping("/genres")
+    public ArrayList<Genre> getGenres(HttpServletRequest request) {
+        filmService.log(request);
+        return new ArrayList<>(filmService.getGenres());
+    }
+
+    @GetMapping("/genres/{genreId}")
+    public Genre getGenre(@PathVariable(value = "genreId") int id, HttpServletRequest request) {
+        filmService.log(request);
+        return filmService.getGenre(id);
+    }
+
+    //Рейтинг фильма MPA
+    @GetMapping("/mpa")
+    public ArrayList<MPA> getMPAs(HttpServletRequest request) {
+        filmService.log(request);
+        return new ArrayList<>(filmService.getMPAs());
+    }
+
+    @GetMapping("/mpa/{mpaId}")
+    public MPA getMPA(@PathVariable(value = "mpaId") int id, HttpServletRequest request) {
+        filmService.log(request);
+        return filmService.getMPA(id);
+    }
 }

@@ -42,7 +42,6 @@ public class UserController {
     @GetMapping("/users/{userId}/friends")
     public List<User> getFriends(@PathVariable(value = "userId") int id, HttpServletRequest request) {
         userService.log(request);
-        List<User> uuu = userService.getFriends(id);
         return userService.getFriends(id);
     }
 
@@ -73,7 +72,6 @@ public class UserController {
         userService.log(request);
         userService.validateUserExists(userId);
         userService.validateUserExists(friendId);
-        userService.addFriend(friendId, userId);
         return userService.addFriend(userId, friendId);
     }
 

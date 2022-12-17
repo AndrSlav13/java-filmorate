@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controllers.UserController;
 import ru.yandex.practicum.filmorate.errors.httpExceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.DbUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorageInterface;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +18,13 @@ public class UserService implements UserServiceInterface {
     private final UserStorageInterface userData;
     private static final org.slf4j.Logger log = UserController.getLogger();
 
+    @Override
+    public Boolean contains(Integer userId) {
+        return userData.contains(userId);
+    }
+
     @Autowired
-    public UserService(InMemoryUserStorage userData) {
+    public UserService(DbUserStorage userData) {
         this.userData = userData;
     }
 
@@ -93,7 +98,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public List<User> getCommonFriends(int idUser1, int idUser2) {
+    public List<User> getCommonFriends(Integer idUser1, Integer idUser2) {
         return userData.getCommonFriends(idUser1, idUser2);
     }
 }
