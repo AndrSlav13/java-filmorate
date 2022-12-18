@@ -95,16 +95,18 @@ public class DbFilmStorage implements FilmStorageInterface {
     private void loadGenres(List<Film> films) {
         log.debug("loadGenres(List<Film> films)");
         if (films == null || films.isEmpty()) return;
+        String inSql = String.join(",", Collections.nCopies(films.stream().distinct().collect(Collectors.toList()).size(), "?"));
         final Map<Integer, Film> filmMap = films.stream().collect(
                 Collectors.toMap(film -> film.getId(), film -> film, (a, b) -> b));
-        String sql = "select g.ID as id_g, g.name as name_g, f.ID_FILM as id_f " +
+        String sql = String.format("select g.ID as id_g, g.name as name_g, f.ID_FILM as id_f " +
                 "from genre_film_table as f " +
-                "LEFT JOIN GENRES_TABLE as g on f.ID_GENRE=g.ID ";
+                "LEFT JOIN GENRES_TABLE as g on f.ID_GENRE=g.ID " +
+                "WHERE f.ID_FILM IN (%s)", inSql);
 
         jdbcTemplate.query(sql, (rs) -> {
             Film f = filmMap.get(rs.getInt("id_f"));
             if (f != null) f.addGenre(new Genre(rs.getInt("id_g"), rs.getString("name_g")));
-        });
+        }, films.stream().map(Film::getId).toArray());
     }
 
     private List<Film> getFs(FILMS_ENUM v) {
@@ -159,7 +161,7 @@ public class DbFilmStorage implements FilmStorageInterface {
                             new LinkedHashSet<>(),
                             new MPA(rs.getInt("mid"), rs.getString("mpa"))
                     );
-                    return null;
+                    throw new HttpRequestUserException(404, "Film id=" + id + " doesn't exist");
                 }, id);
 
         loadGenres(rezult);
