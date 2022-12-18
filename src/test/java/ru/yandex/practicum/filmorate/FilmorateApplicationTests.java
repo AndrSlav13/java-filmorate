@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,11 +116,6 @@ class FilmorateApplicationTests {
                 .duration(duration + 2)
                 .releaseDate(releaseDate.minus(Period.of(0, 0, 2)))
                 .build();
-    }
-
-    @AfterEach
-    public void freeResources() {
-        ;
     }
 
     @Test
