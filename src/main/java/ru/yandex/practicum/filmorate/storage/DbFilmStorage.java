@@ -30,12 +30,14 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Autowired
     public DbFilmStorage(JdbcTemplate jdbcTemplate, UserService userService) {
+        log.debug("DbFilmStorage(JdbcTemplate jdbcTemplate, UserService userService)");
         this.jdbcTemplate = jdbcTemplate;
         this.userService = userService;
     }
 
     @Override
     public Integer getSize() {
+        log.debug("getSize()");
         String sql = "select count(*) from FILM_TABLE";
         return jdbcTemplate.queryForObject(sql, Integer.class);
     }
@@ -43,23 +45,27 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public Boolean isEmpty() {
+        log.debug("isEmpty()");
         return getSize() == 0;
     }
 
     @Override
     public Boolean contains(Film film) {
+        log.debug("contains(Film film)");
         String sql = "select count(*) from FILM_TABLE where id=?";
         return jdbcTemplate.queryForObject(sql, Integer.class, film.getId()) != 0;
     }
 
     @Override
     public Boolean contains(Integer filmId) {
+        log.debug("contains(Integer filmId)");
         String sql = "select count(*) from FILM_TABLE where id=?";
         return jdbcTemplate.queryForObject(sql, Integer.class, filmId) != 0;
     }
 
     //In database
     private void addGenres(Film film) {
+        log.debug("addGenres(Film film)");
         if (film.getGenres() == null || film.getGenres().isEmpty()) return;
         LinkedHashSet<Genre> hset = new LinkedHashSet<>();
         for (Genre g : film.getGenres()) hset.add(g);
@@ -73,6 +79,7 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     //In program
     private void loadGenres(Film film) {
+        log.debug("loadGenres(Film film)");
         if (film == null) return;
         String sql = "select g.ID as id_g, g.name as name_g " +
                 "from genre_film_table as f " +
@@ -81,15 +88,13 @@ public class DbFilmStorage implements FilmStorageInterface {
 
         jdbcTemplate.query(sql, (rs) -> {
             film.addGenre(new Genre(rs.getInt("id_g"), rs.getString("name_g")));
-            int f = rs.getInt("id_g");
-            double re = 8.9;
         }, film.getId());
     }
 
     //In program
     private void loadGenres(List<Film> films) {
+        log.debug("loadGenres(List<Film> films)");
         if (films == null || films.isEmpty()) return;
-        final List<Integer> ids = films.stream().map(Film::getId).collect(Collectors.toList());
         final Map<Integer, Film> filmMap = films.stream().collect(
                 Collectors.toMap(film -> film.getId(), film -> film, (a, b) -> b));
         String sql = "select g.ID as id_g, g.name as name_g, f.ID_FILM as id_f " +
@@ -133,11 +138,13 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public List<Film> getFilms() {
+        log.debug("getFilms()");
         return getFs(FILMS_ENUM.ALL);
     }
 
     @Override
     public Film getFilm(int id) {
+        log.debug("getFilm(int id)");
         String sql = "select f.id as fid, f.name as name, description, releaseDate, duration, m.id as mid, m.NAME as mpa " +
                 "from FILM_TABLE AS f " +
                 "LEFT JOIN MPA_TABLE as m on f.ID_MPA=m.ID " +
@@ -162,6 +169,7 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public Film addFilm(Film film) {
+        log.debug("addFilm(Film film)");
         String sqlQuery = "insert into FILM_TABLE(NAME, DESCRIPTION, RELEASEDATE, DURATION, ID_MPA) " +
                 "values (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -182,6 +190,7 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public Film updateFilm(Film film) {
+        log.debug("updateFilm(Film film)");
         String sql = "DELETE FROM GENRE_FILM_TABLE " +
                 "WHERE ID_FILM=? ";
         jdbcTemplate.update(sql, film.getId());
@@ -212,6 +221,7 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public List<User> addLike(Integer idFilm, Integer idUser) {
+        log.debug("addLike(Integer idFilm, Integer idUser)");
         if (!userService.contains(idUser)) throw new StorageException("user with id=" + idUser + " doesn't exist");
         if (!contains(idFilm)) throw new StorageException("film with id=" + idFilm + " doesn't exist");
         String sql = "insert into like_film_table (id_film, id_user)" +
@@ -222,6 +232,7 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public List<User> removeLike(Integer idFilm, Integer idUser) {
+        log.debug("removeLike(Integer idFilm, Integer idUser)");
         String sql = "delete from like_film_table " +
                 "where ID_FILM=? AND ID_USER=?";
         jdbcTemplate.update(sql, idFilm, idUser);
@@ -230,12 +241,14 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public List<Film> getPopularFilms(Optional<Integer> count) {
+        log.debug("getPopularFilms(Optional<Integer> count)");
         List<Film> rezult = getFs(FILMS_ENUM.POPULAR);
         return rezult.stream().limit(count.orElse(Integer.MAX_VALUE)).collect(Collectors.toList());
     }
 
     @Override
     public List<Genre> getGenres() {
+        log.debug("getGenres()");
         String sql = "select id, name " +
                 "from genres_table ";
 
@@ -246,6 +259,7 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public Genre getGenre(int id) {
+        log.debug("getGenre(int id)");
         String sql = "select id, name " +
                 "from genres_table " +
                 "where id=? ";
@@ -258,6 +272,7 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public List<MPA> getMPAs() {
+        log.debug("getMPAs()");
         String sql = "select id, name " +
                 "from mpa_table ";
 
@@ -268,6 +283,7 @@ public class DbFilmStorage implements FilmStorageInterface {
 
     @Override
     public MPA getMPA(int id) {
+        log.debug("getMPA(int id)");
         String sql = "select id, name " +
                 "from mpa_table " +
                 "where id=? ";
