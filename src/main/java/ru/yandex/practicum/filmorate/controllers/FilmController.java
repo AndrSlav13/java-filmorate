@@ -93,6 +93,7 @@ public class FilmController {
     @GetMapping("/genres/{genreId}")
     public Genre getGenre(@PathVariable(value = "genreId") int id, HttpServletRequest request) {
         filmService.log(request);
+        //validation in storage - the base is small
         return filmService.getGenre(id);
     }
 
@@ -106,6 +107,7 @@ public class FilmController {
     @GetMapping("/mpa/{mpaId}")
     public MPA getMPA(@PathVariable(value = "mpaId") int id, HttpServletRequest request) {
         filmService.log(request);
+        //validation in storage - the base is small
         return filmService.getMPA(id);
     }
 }

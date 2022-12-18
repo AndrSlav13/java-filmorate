@@ -7,11 +7,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controllers.UserController;
 import ru.yandex.practicum.filmorate.errors.httpExceptions.HttpRequestUserException;
-import ru.yandex.practicum.filmorate.errors.httpExceptions.StorageException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.services.UserService;
-import ru.yandex.practicum.filmorate.services.UserServiceInterface;
 import ru.yandex.practicum.filmorate.util.FILMS_ENUM;
 import ru.yandex.practicum.filmorate.util.Genre;
 import ru.yandex.practicum.filmorate.util.MPA;
@@ -24,15 +21,12 @@ import java.util.stream.Collectors;
 @Component
 public class DbFilmStorage implements FilmStorageInterface {
     private final JdbcTemplate jdbcTemplate;
-    private final UserServiceInterface userService;
-
     private static final org.slf4j.Logger log = UserController.getLogger();
 
     @Autowired
-    public DbFilmStorage(JdbcTemplate jdbcTemplate, UserService userService) {
-        log.debug("DbFilmStorage(JdbcTemplate jdbcTemplate, UserService userService)");
+    public DbFilmStorage(JdbcTemplate jdbcTemplate) {
+        log.debug("DbFilmStorage(JdbcTemplate jdbcTemplate)");
         this.jdbcTemplate = jdbcTemplate;
-        this.userService = userService;
     }
 
     @Override
@@ -224,8 +218,6 @@ public class DbFilmStorage implements FilmStorageInterface {
     @Override
     public List<User> addLike(Integer idFilm, Integer idUser) {
         log.debug("addLike(Integer idFilm, Integer idUser)");
-        if (!userService.contains(idUser)) throw new StorageException("user with id=" + idUser + " doesn't exist");
-        if (!contains(idFilm)) throw new StorageException("film with id=" + idFilm + " doesn't exist");
         String sql = "insert into like_film_table (id_film, id_user)" +
                 "VALUES(?, ?)";
         jdbcTemplate.update(sql, idFilm, idUser);

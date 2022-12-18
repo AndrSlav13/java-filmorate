@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controllers.UserController;
-import ru.yandex.practicum.filmorate.errors.httpExceptions.StorageException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.Date;
@@ -86,7 +85,7 @@ public class DbUserStorage implements UserStorageInterface {
                 "values (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"id"});
+            final PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"id"});
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getLogin());
             stmt.setString(3, user.getName());
@@ -105,18 +104,13 @@ public class DbUserStorage implements UserStorageInterface {
         return user;
     }
 
-    private boolean isFriendOf(int idFriend, int idUser) {
-        String sql = "select count(*) " +
-                "from user_friend_table as uf1 " +
-                "where uf1.ID_USER=? AND uf1.ID_FRIEND=? ";
-        return jdbcTemplate.queryForObject(sql, Integer.class, idUser, idFriend) != 0;
-    }
-
     @Override
     public User addFriend(int idUser, int idFriend) {
         log.debug("addFriend(int idUser, int idFriend)");
-        if (!contains(idUser)) throw new StorageException("user with id=" + idUser + " doesn't exist");
-        if (!contains(idFriend)) throw new StorageException("user with id=" + idFriend + " doesn't exist");
+        if (idUser == idFriend) {
+            log.info("added your best friend");
+            return getUser(idFriend);
+        }
         String sql = "insert into user_friend_table (id_user, id_friend)" +
                 "VALUES(?, ?)";
         jdbcTemplate.update(sql, idUser, idFriend);
@@ -145,6 +139,10 @@ public class DbUserStorage implements UserStorageInterface {
     @Override
     public List<User> deleteFriend(int idUser, int idFriend) {
         log.debug("deleteFriend(int idUser, int idFriend)");
+        if (idUser == idFriend) {
+            log.info("can't remove your best friend");
+            return List.of(getUser(idUser));
+        }
         String sql = "delete from user_friend_table " +
                 "where ID_USER=? AND ID_FRIEND=?";
         jdbcTemplate.update(sql, idUser, idFriend);
@@ -154,8 +152,6 @@ public class DbUserStorage implements UserStorageInterface {
     @Override
     public List<User> getCommonFriends(Integer idUser1, Integer idUser2) {
         log.debug("getCommonFriends(Integer idUser1, Integer idUser2)");
-        if (idUser1 == null || idUser2 == null ||
-                !contains(idUser1) || !contains(idUser2)) return List.of();
         String sql = "select id, email, login, name, birthday from USER_TABLE " +
                 "where id in (" +
                 "            select t1.ID_FRIEND from USER_FRIEND_TABLE as t1" +

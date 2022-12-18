@@ -76,7 +76,7 @@ CREATE VIEW IF NOT EXISTS USERS_VIEW AS (
                                         ORDER BY count(*));
 
 CREATE VIEW IF NOT EXISTS FILMS_VIEW_POPULAR AS (
-                                                select f.id as fid, f.name as name, description, releaseDate, duration, m.id as mid, m.NAME as mpa
+                                                select f.id as fid, f.name as name, description, releaseDate, duration, m.id as mid, m.NAME as mpa, count(lk.id_user) as rate
                                                 from FILM_TABLE as f
                                                          LEFT JOIN MPA_TABLE as m on f.ID_MPA=m.ID
                                                          LEFT JOIN like_film_table as lk on f.id=lk.ID_FILM

@@ -197,6 +197,60 @@ class FilmorateApplicationTests {
     }
 
     @Test
+    public void testDelete() {
+        filmStorage.addFilm(film);
+        film2.setId(film.getId());
+        filmStorage.updateFilm(film2);
+
+        userStorage.addUser(usr1);
+        userStorage.addUser(usr2);
+        userStorage.addUser(usr3);
+        filmStorage.addLike(film.getId(), usr1.getId());
+        filmStorage.addLike(film.getId(), usr2.getId());
+        filmStorage.addLike(film.getId(), usr3.getId());
+        filmStorage.removeLike(film.getId(), usr1.getId());
+        filmStorage.removeLike(film.getId(), usr2.getId());
+        usr1.setId(usr3.getId());
+        usr1.setLogin("qqqqqqqqqq");
+        userStorage.updateUser(usr1);
+        userStorage.addFriend(usr2.getId(), usr2.getId());
+        userStorage.addFriend(usr3.getId(), usr2.getId());
+        userStorage.deleteFriend(usr3.getId(), usr2.getId());
+
+        Film flm = filmStorage.getFilm(film.getId());
+        assertThat(flm).hasFieldOrPropertyWithValue("name", film2.getName())
+                .hasFieldOrPropertyWithValue("description", film2.getDescription())
+                .hasFieldOrPropertyWithValue("duration", film2.getDuration())
+                .hasFieldOrPropertyWithValue("releaseDate", film2.getReleaseDate());
+
+        User user = userStorage.getUser(usr3.getId());
+        assertThat(user).hasFieldOrPropertyWithValue("name", usr1.getName())
+                .hasFieldOrPropertyWithValue("id", usr1.getId())
+                .hasFieldOrPropertyWithValue("email", usr1.getEmail())
+                .hasFieldOrPropertyWithValue("birthday", usr1.getBirthday());
+        List<User> userList = userStorage.getCommonFriends(usr2.getId(), usr3.getId());
+        assertThat(userList).isEmpty();
+    }
+
+    @Test
+    public void testAlls() {
+
+        filmStorage.addFilm(film);
+        filmStorage.addFilm(film2);
+
+        userStorage.addUser(usr1);
+        userStorage.addUser(usr2);
+        List<Film> filmList = filmStorage.getFilms();
+        List<User> userList = userStorage.getUsers();
+        List<Genre> genreList = filmStorage.getGenres();
+        List<MPA> mpaList = filmStorage.getMPAs();
+        assertThat(filmList).hasSize(2);
+        assertThat(userList).hasSize(2);
+        assertThat(genreList).hasSize(6);
+        assertThat(mpaList).hasSize(5);
+    }
+
+    @Test
     public void testFindMPA() {
         filmStorage.addFilm(film);
 
