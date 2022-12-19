@@ -42,13 +42,15 @@ public class UserController {
     @GetMapping("/users/{userId}/friends")
     public List<User> getFriends(@PathVariable(value = "userId") int id, HttpServletRequest request) {
         userService.log(request);
-        List<User> uuu = userService.getFriends(id);
+        userService.validateUserExists(id);
         return userService.getFriends(id);
     }
 
     @GetMapping("/users/{user1Id}/friends/common/{user2Id}")
     public List<User> getCommonFriends(@PathVariable int user1Id, @PathVariable int user2Id, HttpServletRequest request) {
         userService.log(request);
+        userService.validateUserExists(user1Id);
+        userService.validateUserExists(user2Id);
         return userService.getCommonFriends(user1Id, user2Id);
     }
 
@@ -73,13 +75,14 @@ public class UserController {
         userService.log(request);
         userService.validateUserExists(userId);
         userService.validateUserExists(friendId);
-        userService.addFriend(friendId, userId);
         return userService.addFriend(userId, friendId);
     }
 
     @DeleteMapping("/users/{userId}/friends/{friendId}")
     public List<User> deleteFriend(@PathVariable int userId, @PathVariable int friendId, HttpServletRequest request) {
         userService.log(request);
+        userService.validateUserExists(userId);
+        userService.validateUserExists(friendId);
         return userService.deleteFriend(userId, friendId);
     }
 

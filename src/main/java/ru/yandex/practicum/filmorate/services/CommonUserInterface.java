@@ -5,6 +5,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.List;
 
 public interface CommonUserInterface {
+    Boolean contains(Integer userId);
+
     User addUser(User user);
 
     User updateUser(User user);
@@ -19,5 +21,5 @@ public interface CommonUserInterface {
 
     List<User> getFriends(int idUser);
 
-    List<User> getCommonFriends(int idUser1, int idUser2);
+    List<User> getCommonFriends(Integer idUser1, Integer idUser2);
 }
